@@ -8,6 +8,8 @@ from .models import Post
 #     created = serializers.DateTimeField(read_only=True)
 
 class PostSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(max_length=50)
+    
     class Meta:
         model = Post
         fields = [
