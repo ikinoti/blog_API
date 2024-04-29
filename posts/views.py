@@ -2,6 +2,7 @@
 
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, generics, mixins
 from rest_framework.decorators import api_view, APIView
 
@@ -30,6 +31,7 @@ class PostListCreateView(generics.GenericAPIView, mixins.ListModelMixin, mixins.
         a view for creating and listing posts
     """
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated,]
     queryset = Post.objects.all()
 
     def get(self, request:Request, *args, **kwargs):
