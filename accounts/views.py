@@ -1,20 +1,23 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from .serializers import SignUpSerializer
+# from rest_framework.permissions import IsAuthenticated
+# from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+
+from .serializers import SignUpSerializer
+from .tokens import create_jwt_pair_for_user
 
 
 # Create your views here.
 
 class SignUpView(generics.GenericAPIView):
     serializer_class = SignUpSerializer
-    permission_classes = [IsAuthenticated,]
-    authentication_classes = [SessionAuthentication, TokenAuthentication ]
+    # permission_classes = [IsAuthenticated,]
+    # authentication_classes = [SessionAuthentication, TokenAuthentication ]
+    permission_classes = []
 
     def post(self, request:Request):
         data = request.data
@@ -34,8 +37,9 @@ class SignUpView(generics.GenericAPIView):
     
 
 class LoginView(APIView):
-    permission_classes = [IsAuthenticated,]
-    authentication_classes = [SessionAuthentication, TokenAuthentication, ]
+    # permission_classes = [IsAuthenticated,]
+    # authentication_classes = [SessionAuthentication, TokenAuthentication, ]
+    permission_classes = []
     
 
     def post(self, request:Request):
@@ -45,9 +49,11 @@ class LoginView(APIView):
         user = authenticate(email=email, password = password)
 
         if user is not None:
+            tokens = create_jwt_pair_for_user(user)
+
             response = {
                 "message": "Login Successfull",
-                "token": user.auth_token.key
+                "tokens": tokens
             }
             return Response(data=response, status=status.HTTP_200_OK)
         else:
