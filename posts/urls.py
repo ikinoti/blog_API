@@ -6,5 +6,5 @@ urlpatterns = [
     
     path("",views.PostListCreateView.as_view(), name="list_post"),
     path("<int:pk>", views.PostRetrieveUpdateDeleteView.as_view(), name="post_detail"),
-    
+    path("current_user/", views.get_posts_for_current_user, name="current_user")
 ]
