@@ -18,6 +18,11 @@ class PostListCreateTestCase(APITestCase):
         self.factory = APIRequestFactory()
         self.view = PostListCreateView.as_view()
         self.url = reverse("list_posts")
+        self.user = User.objects.create(
+            username = "janedoe",
+            email = "janedoe@app.com",
+            password = "password@1234"
+        )
 
     def test_list_posts(self):
         request = self.factory.get(self.url)
@@ -27,3 +32,15 @@ class PostListCreateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # self.assertEqual(response.data['count'], 0)
         # self.assertEqual(response.data["results"], [])
+
+    def test_post_creation(self):
+        sample_post = {
+            "title": "Sample post",
+            "content": "Sample content"
+        }
+        request = self.factory.post(self.url, sample_post)
+        request.user = self.user
+        response = self.view(request)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
