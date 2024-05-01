@@ -22,10 +22,10 @@ def homepage(request:Request):
 
     if request.method == "POST":
         data = request.data
-        response={"message":"hello world", "data":data}
+        response={"message":"Hello World", "data":data}
         return Response(data=response, status=status.HTTP_201_CREATED)
      
-    response={"message":"hello world"}
+    response={"message":"Hello World"}
     return Response(data=response, status=status.HTTP_200_OK)
 
 
