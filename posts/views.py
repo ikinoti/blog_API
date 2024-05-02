@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework import status, generics, mixins
 from rest_framework.decorators import api_view, APIView, permission_classes
+from rest_framework.pagination import PageNumberPagination
+from drf_yasg.utils import swagger_auto_schema
 
 from .models import Post
 from .serializers import PostSerializer
@@ -43,9 +45,17 @@ class PostListCreateView(generics.GenericAPIView, mixins.ListModelMixin, mixins.
         serializer.save(author=user)
         return super().perform_create(serializer)
 
+    @swagger_auto_schema(
+            operation_summary="List all Posts",
+            operation_description="This endpoint creates a post"
+    )
     def get(self, request:Request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+            operation_summary="Creates a Posts",
+            operation_description="This returns a list of all posts"
+    )
     def post(self, request:Request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
@@ -61,12 +71,24 @@ class PostRetrieveUpdateDeleteView(
     queryset = Post.objects.all()
     permission_classes = [AuthorOrReadOnly]
 
+    @swagger_auto_schema(
+            operation_summary="Retrieve a post by id",
+            operation_description="This retrieves a post by an id"
+    )
     def get(self, request:Request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+            operation_summary="Updates a post by id",
+            operation_description="This updates a post given the id"
+    )
     def put(self, request:Request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+            operation_summary="Deletes a post",
+            operation_description="This deletes a post given the id"
+    )
     def delete(self, request:Request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
     
@@ -105,5 +127,9 @@ class ListPostsForAuthor(generics.GenericAPIView, mixins.ListModelMixin):
         
         return queryset
 
+    @swagger_auto_schema(
+            operation_summary="LIst posts for an author (user)",
+            operation_description="This retrieves all post done by login user"
+    )
     def get(self, request:Request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
