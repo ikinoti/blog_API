@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 from .serializers import SignUpSerializer
 from .tokens import create_jwt_pair_for_user
-
+from drf_yasg.utils import swagger_auto_schema
 
 # Create your views here.
 
@@ -19,6 +19,10 @@ class SignUpView(generics.GenericAPIView):
     # authentication_classes = [SessionAuthentication, TokenAuthentication ]
     permission_classes = []
 
+    @swagger_auto_schema(
+            operation_summary="Create a user account",
+            operation_description="This signs up a user"
+    )
     def post(self, request:Request):
         data = request.data
         serializer = self.serializer_class(data = data)
@@ -41,7 +45,10 @@ class LoginView(APIView):
     # authentication_classes = [SessionAuthentication, TokenAuthentication, ]
     permission_classes = []
     
-
+    @swagger_auto_schema(
+            operation_summary="Generate JWT pair",
+            operation_description="This slogins a user with email and password"
+    )
     def post(self, request:Request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -59,6 +66,10 @@ class LoginView(APIView):
         else:
             return Response(data={"Message": "Invalid email or password"})
 
+    @swagger_auto_schema(
+            operation_summary="Get request info",
+            operation_description="This shows the request information"
+    )
     def get(self, request:Request):
         content = {
             "user": str(request.user),
